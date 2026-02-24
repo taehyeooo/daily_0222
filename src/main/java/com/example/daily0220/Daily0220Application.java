@@ -1,19 +1,20 @@
 package com.example.daily0220;
 
-import com.example.daily0220.domain.*;
-import com.example.daily0220.repository.*;
+import com.example.daily0220.domain.Post;
+import com.example.daily0220.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.List;
+import java.util.Scanner;
 
 @SpringBootApplication
 public class Daily0220Application implements CommandLineRunner {
 
-    @Autowired private EmployeeRepository empRepo;
-    @Autowired private DepartmentRepository deptRepo;
+    @Autowired
+    private PostRepository postRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(Daily0220Application.class, args);
@@ -21,18 +22,24 @@ public class Daily0220Application implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        Department d = deptRepo.save(new Department("기술지원팀", "인천"));
-        empRepo.save(new Employee("김태형", 5500L, d));
-        empRepo.save(new Employee("이정연", 7500L, d));
-        empRepo.save(new Employee("김태형", 4500L, d)); // 정렬 테스트용
 
-        System.out.println("\n--- [전체 사원 정보 조회] ---");
-        empRepo.findAll().forEach(e ->
-                System.out.println("사번: " + e.getEmpNo() + ", 이름: " + e.getEmpName() + ", 부서: " + e.getDepartment().getDeptName()));
+        postRepository.save(new Post(null, "스프링 부트 시작하기", "내용입니다.", "김태형", null));
+        postRepository.save(new Post(null, "자바 공부법", "스프링이 핵심.", "김땡떙", null));
+        postRepository.save(new Post(null, "인텔리제이 꿀팁", "김태형님이 알려주신 팁", "홍길동", null));
 
-        System.out.println("\n--- ['김태형' 검색 결과 - 급여 내림차순] ---");
-        List<Employee> result = empRepo.findByEmpNameOrderBySalaryDesc("김태형");
-        result.forEach(e ->
-                System.out.println("이름: " + e.getEmpName() + ", 급여: " + e.getSalary() + ", 입사일: " + e.getHireDate()));
+
+        String keyword = "김태형";
+
+        System.out.println("\n=== [" + keyword + "] 키워드 검색 결과 ===");
+
+
+        List<Post> searchResults = postRepository.findByTitleContainingOrContentContainingOrAuthorContaining(keyword, keyword, keyword);
+
+        if (searchResults.isEmpty()) {
+            System.out.println("검색 결과가 없습니다.");
+        } else {
+            searchResults.forEach(p ->
+                    System.out.println("제목: " + p.getTitle() + " | 작성자: " + p.getAuthor() + " | 내용: " + p.getContent()));
+        }
     }
 }
