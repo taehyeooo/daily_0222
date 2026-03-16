@@ -21,9 +21,6 @@ public class Post {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    // 댓글과의 1:N 연관관계 설정
-    // mappedBy = "post": Comment 엔티티의 post 필드에 의해 매핑됨을 의미
-    // orphanRemoval = true: 게시글에서 댓글 리스트를 제거하면 DB에서도 삭제됨
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
