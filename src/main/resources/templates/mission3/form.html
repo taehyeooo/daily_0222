@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${postId} ? '게시글 수정' : '게시글 작성'"></title>
+</head>
+<body>
+<h1 th:text="${postId} ? '게시글 수정' : '게시글 작성'"></h1>
+
+<form th:action="${postId} ? @{/mission3/posts/{id}/edit(id=${postId})} : @{/mission3/posts}"
+      th:object="${postRequestDto}"
+      method="post">
+    <div>
+        <label>제목
+            <input type="text" th:field="*{title}" placeholder="제목을 입력하세요">
+        </label>
+    </div>
+    <div>
+        <label>작성자
+            <input type="text" th:field="*{author}" placeholder="작성자를 입력하세요"
+                   th:readonly="${postId != null}">
+        </label>
+    </div>
+    <div>
+        <label>내용<br>
+            <textarea th:field="*{content}" rows="10" cols="50" placeholder="내용을 입력하세요"></textarea>
+        </label>
+    </div>
+    <button type="submit" th:text="${postId} ? '수정 완료' : '작성 완료'"></button>
+    <a href="/mission3/posts">취소</a>
+</form>
+</body>
+</html>
